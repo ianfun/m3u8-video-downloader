@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"/>
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'"/>
+    <title>M3U8 Video Downloader</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <center>
+        <h1>M3U8 Video Downloader</h1>
+        <div>
+            <input type="text" id="url_input" placeholder="Paste and Go!" value="https://gimy.app/eps/58567-9-3.html">
+            <button id="go">Go</button>
+        </div>
+        <div id="path_select_d"><span>Output folder: </span><span id="path_select"></span>
+          <button id="browse">Browse</button></div>
+        <div id="tasks">
+        </div>
+    </center>
+    <script src="index.js"></script>
+</body>
+</html>

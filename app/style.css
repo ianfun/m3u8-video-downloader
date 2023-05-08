@@ -1,0 +1,59 @@
+body {
+  font-family: Roboto, 'Segoe UI',Arial,'Microsoft Jhenghei',sans-serif;
+  text-align: center;
+}
+#url_input {
+  width: 800px;
+  font-size: larger;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+#go {
+  font-size: larger;
+}
+#tasks {
+  border: black solid 2px;
+  min-height: 5em;
+  width: 1000px;
+  border-radius: 5px;
+}
+#tasks > * {
+  text-align: left;
+}
+progress {
+  margin-top: 5px;
+  margin-bottom: 2px;
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 100%;
+}
+p.title {
+  margin-top: 5px;
+  margin-bottom: 2px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+p.details {
+  margin-top: 5px;
+  margin-bottom: 2px;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 0.9em;
+}
+p.red {
+  color: red;
+}
+#path_select_d {
+  cursor: default;
+  margin-bottom: 70px;
+}
+#path_select {
+  display: inline-block;
+  min-width: 200px;
+  min-height: 1em;
+  border: 2px solid black;
+}
+div.Task {
+
+}
