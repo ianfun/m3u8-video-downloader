@@ -9,6 +9,7 @@ const tasks_path = path.resolve(home_dir, '.m3u8downloader_tasks');
 var global_config;
 var global_window;
 var tasks;
+var all_tasks;
 const encoding = {
     'encoding': 'utf8'
 };
@@ -17,8 +18,10 @@ try {
     tasks = JSON.parse(fs.readFileSync(tasks_path, {
         'encoding': 'utf8'
     }));
+    all_tasks = [...tasks];
 } catch (e) {
     tasks = [];
+    all_tasks = [];
 }
 try {
     global_config = JSON.parse(fs.readFileSync(config_path, encoding));
@@ -38,19 +41,30 @@ function save() {
 exports.save = save;
 exports.tasks = tasks;
 exports.global_window = global_window;
-
+exports.remove_url = url => {
+    for (let i = 0; i < tasks.length; ++i) {
+        if (tasks[i].url == url) {
+            tasks.splice(i, 1);
+            break;
+        }
+    }
+    save();
+};
 exports.global_config = global_config;
 exports.saveConfig = () => {
     fs.writeFileSync(config_path, JSON.stringify(global_config), encoding);
 };
+exports.all_tasks = all_tasks;
 exports.new_task = (old, url, title, path, type) => {
-    tasks.push({
+    const x = {
         'url': old,
         'download-url': url,
         'progress': 0,
         'title': title,
         'path': path,
         "type": type
-    });
+    };
+    all_tasks.push(x);
+    tasks.push(x);
     save();
 }

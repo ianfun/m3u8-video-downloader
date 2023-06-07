@@ -4,11 +4,13 @@ html, body {
   text-align: center;
 }
 #url_input {
+  border-radius: 5px;
   width: 800px;
-  font-size: larger;
+  font-size: 1.5em;
   text-align: center;
   margin-top: 20px;
   margin-bottom: 10px;
+  border: 2px solid black;
 }
 #go {
   font-size: larger;
@@ -41,6 +43,7 @@ p.details {
   margin-left: 5px;
   margin-right: 5px;
   font-size: 0.9em;
+  overflow: hidden;
 }
 p.red {
   color: red;

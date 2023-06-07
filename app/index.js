@@ -56,6 +56,8 @@ function status_message(text) {
         message_bar.innerText = message_text + ' ' + message_slash;
         if (++message_count < 40)
             cur_timeout = setTimeout(nextT, 400);
+        else
+            message_bar.innerText = '';
     }
     nextT();
 }
@@ -109,6 +111,7 @@ function spawnYT(url) {
     });
     add_task(oldurl, url, yt_json.title);
 }
+
 function renderYTLinks(x, p) {
     for (let o of Object.values(x)) {
         var n = document.createElement('option');
@@ -118,6 +121,7 @@ function renderYTLinks(x, p) {
         n.k = o.k;
     }
 }
+
 function downloadYoutube(u) {
     const data = new URLSearchParams();
     data.append('q', u.href);
@@ -135,7 +139,7 @@ function downloadYoutube(u) {
         .then(json => {
             yt_json = json;
             if (json.status != 'ok' || json.mess)
-                return status_static(json.mess || gettext(this.url));
+                return status_static(json.mess || gettext('load-yt-info-failed', this.url));
             var select = document.createElement('select');
             select.id = 'select-bar';
             var mp3 = document.createElement('optgroup');
@@ -271,7 +275,7 @@ url_input.oninput = function() {
     url_input.value = url_input.value.replaceAll(' ', '').replaceAll('\t', '');
 }
 appInterface.register_add_task(function(event, data) {
-    status_message(null);
+    status_static(gettext('start-download'));
     add_task(data.url, data['download-url'], data.title);
 });
 appInterface.register_error(function(event, data) {

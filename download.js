@@ -73,7 +73,7 @@ function mfetch(url) {
                 if (share.global_config.fetch_method == 1) {
                     try {
                         var u = new URL(url);
-                        if (u.protocol == 'https')
+                        if (u.protocol == 'https:')
                             n = https;
                         else
                             n = http;
@@ -205,37 +205,39 @@ class FileDownloader {
             this.path = this.path + path.sep + this.title + '.' + this.format;
             share.new_task(this.oldurl, url, this.title, this.path, 'youtube');
         }
+        let self = this;
         if (share.global_config.fetch_method == 2) {
             fetch(url).then(async res => {
                 const total = parseInt(res.headers['content-length'] || res.headers['Content-Length']);
                 var readed = 0;
                 var fallback = 0.05;
-                const fd = await fs.open(this.path, 'w');
-                this.onprogress(fallback);
+                const fd = await fs.open(self.path, 'w');
+                self.onprogress(fallback);
                 const r = res.body.getReader();
                 var chunk;
                 while (chunk = await r.read(), chunk.value != undefined) {
                     readed += chunk.value.length;
                     await fd.write(chunk.value);
                     if (!Number.isNaN(total)) {
-                        this.onprogress(readed / total);
+                        self.onprogress(readed / total);
                     } else {
-                        this.onprogress(fallback += 0.005);
+                        self.onprogress(fallback += 0.005);
                         if (fallback >= 0.995) {
                             fallback = 0.0;
                         }
                     }
                 }
                 await fd.close();
-                this.oncomplete();
-            }).catch(this.onerror);
+                share.remove_url(self.oldurl);
+                self.oncomplete();
+            }).catch(self.onerror);
             return;
         }
-        const fd = await fs.open(this.path, 'w');
+        const fd = await fs.open(self.path, 'w');
         var n = net;
         if (share.global_config.fetch_method == 1) {
             var u = new URL(url);
-            if (u.protocol == 'https')
+            if (u.protocol == 'https:')
                 n = https;
             else
                 n = http;
@@ -249,9 +251,9 @@ class FileDownloader {
                 res.on('data', function(data) {
                     if (!Number.isNaN(total)) {
                         readed += buffer.length;
-                        this.onprogress(readed / total);
+                        self.onprogress(readed / total);
                     } else {
-                        this.onprogress(fallback += 0.005);
+                        self.onprogress(fallback += 0.005);
                         if (fallback >= 0.995) {
                             fallback = 0.0;
                         }
@@ -259,13 +261,14 @@ class FileDownloader {
                 });
                 res.on('end', function() {
                     fd.close();
-                    this.oncomplete();
+                    share.remove_url(self.oldurl);
+                    self.oncomplete();
                 });
             } else
-                this.onerror(gettext('server-code', res.statusCode, res.statusMessage));
+                self.onerror(gettext('server-code', res.statusCode, res.statusMessage));
         })
-        req.on('error', this.onerror);
-        req.on('abort', this.onerror);
+        req.on('error', self.onerror);
+        req.on('abort', self.onerror);
         req.end();
     }
 }
@@ -324,17 +327,16 @@ class M3U8Downloader {
             this.onprogress(++c / segments.length);
         }
         await fd.close();
+        share.remove_url(this.oldurl);
         this.oncomplete();
     }
 }
 
 module.exports = {
     'download_direct': function(make_path, format, title, oldurl, url, onprogress, onerror, path, oncomplete) {
-        console.log('download_direct ', make_path);
         (downloaders[oldurl] = new FileDownloader(make_path, url, format, sanitize(title), oldurl, onprogress, onerror, oncomplete, path)).start();
     },
     'download': function(make_path, title, oldurl, url, onprogress, onerror, path, oncomplete) {
-        console.log('download ', make_path);
         (downloaders[oldurl] = new M3U8Downloader(make_path, sanitize(title), oldurl, onprogress, onerror, oncomplete, path)).downloadM3U8(url);
     },
     'triggerState': function(url) {

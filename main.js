@@ -7,6 +7,7 @@ const {
     Menu,
     dialog
 } = require('electron');
+if (require('electron-squirrel-startup')) app.quit();
 const gettext = require('./gettext.js');
 const fs = require('fs');
 const path = require('path')
@@ -26,15 +27,6 @@ var menu_url;
 var selected_path = '';
 var id_to_win = {};
 
-function remove_url(url) {
-    for (let i = 0; i < share.tasks.length; ++i) {
-        if (share.tasks[i].url == url) {
-            share.tasks.splice(i, 1);
-            break;
-        }
-    }
-}
-
 function matchMines(mines) {
     for (let i of mines) {
         switch (i) {
@@ -52,13 +44,13 @@ app.whenReady().then(() => {
         },
         width: 1200,
         height: 900,
-        autoHideMenuBar: true
+        autoHideMenuBar: true,
+        icon: './assets/icon.png'
     });
     share.global_window.loadFile('./app/index.html');
     share.global_window.on('closed', () => {
         app.quit();
     });
-    share.global_window.openDevTools();
     session.defaultSession.webRequest.onHeadersReceived({
         urls: ['*://*/*']
     }, (details, callback) => {
@@ -110,7 +102,7 @@ app.whenReady().then(() => {
                                 },
                                 _path,
                                 () => {
-                                    remove_url(oldurl);
+                                    share.remove_url(oldurl);
                                     share.global_window.webContents.send('add-complete', {
                                         'url': oldurl
                                     });
@@ -135,7 +127,7 @@ app.whenReady().then(() => {
                             'url': oldurl,
                             'progress': progress
                         });
-                    }, // onprogress
+                    },
                     err => {
                         share.global_window.webContents.send('add-error', {
                             'url': oldurl,
@@ -144,7 +136,7 @@ app.whenReady().then(() => {
                     },
                     i.path,
                     () => {
-                        remove_url(url);
+                        share.remove_url(oldurl);
                         share.global_window.webContents.send('add-complete', {
                             'url': oldurl
                         });
@@ -170,7 +162,7 @@ app.whenReady().then(() => {
                 },
                 i.path,
                 () => {
-                    remove_url(url);
+                    share.remove_url(oldurl);
                     share.global_window.webContents.send('add-complete', {
                         'url': oldurl
                     });
@@ -202,7 +194,7 @@ app.whenReady().then(() => {
             },
             selected_path,
             () => {
-                remove_url(url);
+                share.remove_url(oldurl);
                 share.global_window.webContents.send('add-complete', {
                     'url': oldurl
                 });
@@ -281,7 +273,7 @@ app.whenReady().then(() => {
     var templete = [{
             label: gettext('menu-show'),
             click: () => {
-                for (let x of share.tasks) {
+                for (let x of share.all_tasks) {
                     if (x.url == menu_url) {
                         shell.showItemInFolder(x.path);
                     }
@@ -291,7 +283,7 @@ app.whenReady().then(() => {
         {
             label: gettext('menu-open'),
             click: () => {
-                for (let x of share.tasks) {
+                for (let x of share.all_tasks) {
                     if (x.url == menu_url) {
                         shell.openPath(x.path);
                     }
@@ -304,7 +296,7 @@ app.whenReady().then(() => {
                 share.global_window.webContents.send('remove-task', menu_url);
                 if (!isPaused(menu_url))
                     triggerState(menu_url);
-                remove_url(menu_url);
+                share.remove_url(menu_url);
                 share.save();
             }
         },
@@ -319,8 +311,10 @@ app.whenReady().then(() => {
     global_menu = Menu.buildFromTemplate(templete);
     ipcMain.on('check-path', (event, path) => {
         fs.access(path, fs.constants.F_OK, (err) => {
-            if (!err)
-              share.global_window.webContents.send('ok-path', path);
+            if (!err) {
+                selected_path = path;
+                share.global_window.webContents.send('ok-path', path);
+            }
         });
     });
     ipcMain.on('menu-show2', () => {
