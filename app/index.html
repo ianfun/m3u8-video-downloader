@@ -1,25 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"/>
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'"/>
-    <title>M3U8 Video Downloader</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self';connect-src *; img-src *"/>
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self';connect-src *; img-src *"/>
+    <title></title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery.min.js"></script>
+    <link rel="stylesheet" href="jquery-ui.min.css">
+    <script src="jquery-ui.min.js"></script>
+    <script src="gettext.js"></script>
 </head>
 <body>
-    <center>
-        <h1>M3U8 Video Downloader</h1>
+    <center id="online">
+        <h1 id="header"></h1>
         <div>
-            <input type="text" id="url_input" placeholder="Paste and Go!" value="https://gimy.app/eps/58567-9-3.html">
-            <button id="go">Go</button>
+            <input type="text" id="url_input" spellcheck="false" value="">
+            <button id="go"></button>
         </div>
-        <div id="path_select_d"><span>Output folder: </span><span id="path_select"></span>
-          <button id="browse">Browse</button></div>
+        <div id="path_select_d"><span id="choose-folder"></span><span id="path_select"></span>
+          <button id="browse"></button></div>
+        <div id="yt-select"></div>
         <div id="tasks">
         </div>
     </center>
+    <div id="offline">
+        <p id="offline_text"></p>
+    </div>
+    <p id="message_bar"></p>
     <script src="index.js"></script>
 </body>
 </html>

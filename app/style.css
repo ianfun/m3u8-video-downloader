@@ -1,5 +1,6 @@
-body {
-  font-family: Roboto, 'Segoe UI',Arial,'Microsoft Jhenghei',sans-serif;
+html, body {
+  width: 100%;
+  height: 100%;
   text-align: center;
 }
 #url_input {
@@ -54,6 +55,24 @@ p.red {
   min-height: 1em;
   border: 2px solid black;
 }
-div.Task {
-
+#message_bar {
+  height: 20px;
+  position: fixed;
+  left: 0px;
+  bottom: 0px;
+  background-color: #e9e9e9;
+  width: 100%;
+  border: 0px;
+  margin: 0px;
+  padding: 0px;
+}
+#offline {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+#offline_text {
+  font-size: 30px;
+  text-align: center;
+  margin-top: 100px;
 }
