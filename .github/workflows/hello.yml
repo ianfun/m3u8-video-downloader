@@ -1,0 +1,11 @@
+on: push
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    environment: Dev
+    steps:
+      - name: deploy
+      - shell: bash
+        env:
+          SUPER_SECRET: ${{ secrets.Hello }}
+        run: hello "$SUPER_SECRET"
