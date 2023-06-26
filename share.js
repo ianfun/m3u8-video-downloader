@@ -28,7 +28,7 @@ try {
 } catch (e) {
     global_config = {
         'NODE_TLS_REJECT_UNAUTHORIZED': true,
-        'fetch_method': 2
+        'fetch_method': 0
     };
 }
 loaded = true;
